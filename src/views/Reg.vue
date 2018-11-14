@@ -18,14 +18,16 @@
           <span class="icon"><font-awesome-icon icon="envelope"/></span>
           <input class="form-control" type="number" id="code" placeholder="手机验证码" />
           <div class="input-active">
-            <button class="btn btn-info" type="button">获取验证码</button>
+            <!-- <button class="btn btn-info" type="button">获取验证码</button> -->
+            <mu-button color="info" class="btn-info">获取验证码</mu-button>
           </div>
         </div>
         <div class="form-group">
-          <button class="btn btn-primary btn-block" @click="submit()">测测我的借款额度</button>
+          <!-- <button class="btn btn-primary btn-block" @click="submit()">测测我的借款额度</button> -->
+          <mu-button large full-width color="primary" class="btn-primary" @click="submit()">测测我的借款额度</mu-button>
         </div>
         <div class="contract">点击即表示同意 <a href="javascript:;">《用户服务协议》</a></div>
-      </div>    
+      </div>
     </div>
     <div class="bg H5-3">
       <img :src="H5_part_3" alt="">
@@ -64,12 +66,7 @@ export default {
       var phone = document.getElementById('phone');
       var code = document.getElementById('code');      
       if(name.value === ''){
-        //Toast.warning('hello world');
-        this.$toast({
-        message: '提示语句',
-        position: 'middle',
-        duration: 5000
-        })
+        this.$toast.warning('hello world');
       }
     }
   }
@@ -79,6 +76,8 @@ export default {
 <style lang="stylus">
 .container
   padding 0
+  .btn-info,.btn-primary
+    box-shadow none 
 </style>
 
 
