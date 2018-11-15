@@ -1,39 +1,38 @@
 <template>
   <div class="container">
     <div class="bg H5-1">
-      <img :src="H5_part_1" alt="">
+      <img :src="bgs[0]" alt="">
     </div>
     <div class="bg H5-2 pr">
-      <img :src="H5_part_2" alt="">        
+      <img :src="bgs[1]" alt="">        
       <div class="loanForm">
         <div class="form-group">
           <span class="icon"><font-awesome-icon icon="user" /></span>                                      
-          <input class="form-control" type="text" id="name" placeholder="姓名" />                        
+          <input class="form-control" type="text" v-model="form.name" placeholder="姓名" />                        
         </div>
         <div class="form-group">
           <span class="icon"><font-awesome-icon icon="mobile-alt" /></span>
-          <input class="form-control" type="tel" id="phone" placeholder="手机号码" />
+          <input class="form-control" type="tel" v-model="form.phone" placeholder="手机号码" />
         </div>
-        <div class="form-group">
+        <div v-if="form.phone" class="form-group">
           <span class="icon"><font-awesome-icon icon="envelope"/></span>
-          <input class="form-control" type="number" id="code" placeholder="手机验证码" />
+          <input class="form-control" type="number" v-model="form.code" placeholder="手机验证码" />
           <div class="input-active">
-            <!-- <button class="btn btn-info" type="button">获取验证码</button> -->
-            <mu-button color="info" class="btn-info">获取验证码</mu-button>
+            <!-- <button class="btn btn-info" :disabled="this.disabled" @click="getCode()">{{ btnTxt }}</button> -->
+            <mu-button color="info" :disabled="this.disabled" @click="getCode()">{{ btnTxt }}</mu-button>
           </div>
         </div>
         <div class="form-group">
-          <!-- <button class="btn btn-primary btn-block" @click="submit()">测测我的借款额度</button> -->
           <mu-button large full-width color="primary" class="btn-primary" @click="submit()">测测我的借款额度</mu-button>
         </div>
         <div class="contract">点击即表示同意 <a href="javascript:;">《用户服务协议》</a></div>
       </div>
     </div>
     <div class="bg H5-3">
-      <img :src="H5_part_3" alt="">
+      <img :src="bgs[2]" alt="">
     </div>
     <div class="footer">
-      <p>中山大学达安基因（股票代码：002030）<br/>控股子公司，值得信赖</p>
+      <p>中山大学达安基因（股票代码：002030）控股子公司，值得信赖</p>
       <div class="contant">
         联系方式：<a href="tel:020-83224967">020-83224967</a> <a href="tel:13312872661">13312872661</a> 
       </div>
@@ -43,42 +42,126 @@
 
 <script>
 import "../assets/css/main.stylus";
-import H5_part_1 from "../assets/images/H5_01.jpg";
-import H5_part_2 from "../assets/images/H5_02.jpg";
-import H5_part_3 from "../assets/images/H5_03.jpg";
+import axios from 'axios';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+import API_CONFIG from '../utils/api'
 
 export default {
-  name: 'Reg',
+  name: "Reg",
   data () {
     return {
-      H5_part_1: H5_part_1,
-      H5_part_2: H5_part_2,
-      H5_part_3: H5_part_3
+      bgs: [
+        require("../assets/images/H5_01.jpg"),
+        require("../assets/images/H5_02.jpg"),
+        require("../assets/images/H5_03.jpg")
+      ],
+      form: {
+        name: "",
+        phone: "",
+        code: ""
+      },
+      isPhone: false, // 检验是否为手机号/手机未注册
+      btnTxt: '获取验证码',
+      time: 0, //
+      disabled: false
     }
   },
-  methods: {
-    getPhoneCode () {
-      
+  methods: {    
+    // 提交
+    submit() {
+      if (this.form.name === "") {
+        this.$toast.error("请输入您的姓名");
+      } else if (this.form.phone === "") {
+        this.$toast.error("请输入您的手机号码");
+      } else if (this.form.code === "") {
+        this.$toast.error("请输入手机验证码");
+      } else {
+        axios.post(API_CONFIG.doBorrowApply, {
+          userName: this.form.name,
+          mobile: this.form.phone
+        }).then((res) => {
+          if (res.data.success) {
+            // 跳转到成功
+            this.$router.push("/success");
+          } else {
+            this.$toast.error("注册失败");
+          }
+        })
+      }
     },
 
-    submit () {
-      var name = document.getElementById('name');
-      var phone = document.getElementById('phone');
-      var code = document.getElementById('code');      
-      if(name.value === ''){
-        this.$toast.warning('hello world');
+    // 获取短信验证码
+    getCode () {
+      debugger      
+      let status = this.checkPhone();
+      console.log(status);      
+      if (status) {
+        // 验证成功发送手机号
+        axios.post(API_CONFIG.getCode, {
+          phone: this.form.phone
+        }).then((res) => {
+          if (res.data.success) {
+            // 已发送
+            console.log(this);
+            this.$toast.success("短信发送成功");
+            this.time = 60;
+            this.disabled = true;
+            this.timer();
+          }          
+        })
+      }        
+    },    
+
+    // 验证手机号
+    checkPhone () {
+      var bool = false; 
+      if(!/^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/.test(this.form.phone)){         
+        this.$toast.error("手机号格式不正确！");
+        bool = false;
+      } else {
+        axios.post(API_CONFIG.Phone, {
+          mobile: this.form.phone
+        }).then(function(res){
+          // if (res.data.response.code === "1") {
+          //   this.$toast.error("该手机已注册！");
+          // } else if (res.data.response.code === "2" ) {
+          //   this.$toast.error("手机号码格式错误！");
+          // } else {
+          //   // this.isPhone = true;
+          //   bool = true;            
+          // }
+          if (res.data.response.success) {
+            bool = true;
+          }
+        })
+      }
+      return bool;      
+    },
+
+    // 计时
+    timer () {
+      if (this.time > 0) {
+        this.time --;
+        this.btnTxt = this.time + "s后重新获取";
+        setTimeout(this.timer, 1000);
+      } else {
+        this.time = 0;
+        this.btnTxt = "获取验证码";
+        this.disabled = false;
       }
     }
+
   }
-}
+};
 </script>
 
 <style lang="stylus">
 .container
   padding 0
-  .btn-info,.btn-primary
-    box-shadow none 
+  .mu-info-color,.mu-primary-color
+    box-shadow none
+  // .mu-info-color
+  //   background-color #7cc5f3
+  // .mui-primary-color
+  //   background-color #f58235
 </style>
-
-
-

@@ -2,33 +2,29 @@
 .pr
   position relative
 
-.form-control {
+.form-control
   display: block;
   width: 100%;
-  padding: .625rem .75rem;
+  // padding: .625rem .75rem;
   font-size: 1rem;
-  line-height: 1.5;  
+  height: 2.75rem;
+  line-height: 2.75rem;  
   color: #495057;
   background-color: #eeeeee;
   background-clip: padding-box;
   border-radius: .25rem;
   transition: box-shadow .15s ease-in-out;
-
-  &::placeholder {
+  &::placeholder
     color: #b2b2b2;
     opacity: 1;
-  }
-
-  &:focus {
+  &:focus
     color: #495057;
     background-color: #fff;
     outline: 0;
     box-shadow: 0 0 0 0.1rem rgba(0,123,255,.25);
-  }
-}
 
 /* btn */
-.btn {
+.btn
   display: inline-block;
   font-weight: 400;
   text-align: center;
@@ -43,38 +39,29 @@
   line-height: 1.5;
   border-radius: .25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out;
-
-  &.btn-block {
+  &.btn-block
     display: block;
     width: 100%;
-  }
-}
 
 /* btn-primary */
-.btn-primary {
+.btn-primary
   color: #fff;
   background-color: #f58235;
   border-color: #f58235;
-  
-  &:active {
+  &:active
     color: #fff;
     background-color: #db6a1f;
     border-color: #cd5f15;
-  }
-}
 
 /* btn-info */
-.btn-info {
+.btn-info
   color: #fff;
   background-color: #7cc5f3;
   border-color: #7cc5f3;
-
-  &.btn-info:active {
+  &:active
     color: #fff;
     background-color: #50a0d2;
     border-color: #50a0d2;
-  }
-}
 
 /* btn end */
 
@@ -84,92 +71,75 @@
   margin 0 auto
   max-width 750px
 
-.loanForm {
-  position: absolute;
-  width: 90%;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);  
-  background: #FFF;
-  padding: 1.25rem;
-  border-radius: 0.625rem;
+  .bg img
+    width: 100%;
+    display: block;
 
-  .form-control{
-    padding-left: 2.5rem;
-  }
+  .loanForm
+    position: absolute;
+    width: 90%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-transform: translateX(-50%);  
+    background: #FFF;
+    padding: 1.25rem;
+    border-radius: 0.625rem;
 
-  .form-group {
-    position: relative;
-    margin-bottom: 1rem;
+    .form-control
+      padding-left: 2.5rem;
 
-    .icon{
-      position: absolute;
-      left: 0;
-      top: 0;
-      display: inline-block;
-      height: 2.75rem;
-      width: 2.5rem;
-      line-height: 2.75rem;
-      color: #60b3e3;
+    .form-group
+      position: relative;
+      margin-bottom: 1rem;
+      
+      .icon
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: inline-block;
+        height: 2.75rem;
+        width: 2.5rem;
+        line-height: 2.75rem;
+        color: #60b3e3;
+        text-align: center;
+        font-size: 1rem;
+
+      .input-active
+        position: absolute;
+        right: .25rem;
+        top: 50%;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        .btn
+          font-size: .75rem;
+          padding: .5rem .75rem;
+
+    .contract
       text-align: center;
-    }
+      font-size: .875rem;
+      color: #bdbdbd;
+      a
+        color: inherit;              
 
-  }
+  .footer
+    background: #fdf7df;
+    padding: 1.25rem;
+    text-align: center;
 
-}
+    p
+      font-size: .875rem;
+      color: #5a493d;
 
+    .contant
+      display: inline-block;
+      margin-top: .625rem;
+      padding: .3125rem .625rem;
+      background: #7dcbf3;
+      color: #fff;
+      border-radius: .25rem;
+      a
+        color: inherit;
+        display: inline-block;
+        margin-right: 15px;
 
-
-
-.loanForm .form-group .input-active{
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-
-  .btn{
-    font-size: .75rem;
-    padding: .5rem .75rem;
-  }
-}
-
-
-.bg img{ 
-  width: 100%;
-  display: block;
-}
-
-.footer {
-  background: #fdf7df;
-  padding: 1.25rem;
-  text-align: center;
-
-  p {
-    font-size: 1rem;
-    color: #5a493d;
-  }
-
-  .contant {
-    display: inline-block;
-    margin-top: .625rem;
-    padding: .3125rem .625rem;
-    background: #7dcbf3;
-    color: #fff;
-    border-radius: .25rem;
-    a {
-      color: inherit;
-    }
-  }  
-
-}
-
-.contract {
-  text-align: center;
-  font-size: 1rem;
-  color: #bdbdbd;
-  a {
-    color: inherit;
-  }
-}

@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import 'babel-polyfill'
 import MuseUI from "muse-ui"; // Material Design UI 组件库
 import "muse-ui/dist/muse-ui.css"; // MuseUI css
 import Toast from "muse-ui-toast";
