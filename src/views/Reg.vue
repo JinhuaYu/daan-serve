@@ -43,7 +43,6 @@
 <script>
 import "../assets/css/main.stylus";
 import axios from 'axios';
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 import API_CONFIG from '../utils/api'
 
 export default {
@@ -121,7 +120,7 @@ export default {
       } else {
         axios.post(API_CONFIG.Phone, {
           mobile: this.form.phone
-        }).then(function(res){
+        }).then((res) => {
           // if (res.data.response.code === "1") {
           //   this.$toast.error("该手机已注册！");
           // } else if (res.data.response.code === "2" ) {
@@ -135,13 +134,13 @@ export default {
           }
         })
       }
-      return bool;      
+      return bool;
     },
 
     // 计时
-    timer () {
+    timer() {
       if (this.time > 0) {
-        this.time --;
+        this.time--;
         this.btnTxt = this.time + "s后重新获取";
         setTimeout(this.timer, 1000);
       } else {
@@ -150,7 +149,6 @@ export default {
         this.disabled = false;
       }
     }
-
   }
 };
 </script>
