@@ -90,10 +90,9 @@ export default {
     },
 
     // 获取短信验证码
-    getCode () {
-      debugger      
+    getCode () {  
       let status = this.checkPhone();
-      console.log(status);      
+      console.log(status);
       if (status) {
         // 验证成功发送手机号
         axios.post(API_CONFIG.getCode, {
@@ -118,9 +117,10 @@ export default {
         this.$toast.error("手机号格式不正确！");
         bool = false;
       } else {
-        axios.post(API_CONFIG.Phone, {
+        axios.post(API_CONFIG.checkMobile, {
           mobile: this.form.phone
         }).then((res) => {
+          console.log(res);
           // if (res.data.response.code === "1") {
           //   this.$toast.error("该手机已注册！");
           // } else if (res.data.response.code === "2" ) {
@@ -129,12 +129,12 @@ export default {
           //   // this.isPhone = true;
           //   bool = true;            
           // }
-          if (res.data.response.success) {
-            bool = true;
+          if (res.data.response.success) {            
+            bool = 1;
+            return bool;
           }
         })
       }
-      return bool;
     },
 
     // 计时
