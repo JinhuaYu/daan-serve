@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="bg H5-1">
-      <img :src="bgs[0]" alt="">
+      <img :src="bgs[0]" alt=""/>
     </div>
     <div class="bg H5-2 pr">
-      <img :src="bgs[1]" alt="">        
+      <img :src="bgs[1]" alt=""/>        
       <div class="loanForm">
         <div class="form-group">
           <span class="icon"><font-awesome-icon icon="user" /></span>                                      
@@ -17,19 +17,21 @@
         <div v-if="form.phone" class="form-group">
           <span class="icon"><font-awesome-icon icon="envelope"/></span>
           <input class="form-control" type="number" v-model="form.code" placeholder="手机验证码" />
-          <div class="input-active">
-            <!-- <button class="btn btn-info" :disabled="this.disabled" @click="getCode()">{{ btnTxt }}</button> -->
+          <div class="input-active">            
             <mu-button color="info" :disabled="this.disabled" @click="getCode()">{{ btnTxt }}</mu-button>
           </div>
         </div>
         <div class="form-group">
           <mu-button large full-width color="primary" class="btn-primary" @click="submit()">测测我的借款额度</mu-button>
         </div>
-        <div class="contract">点击即表示同意 <a href="javascript:;">《用户服务协议》</a></div>
+        <div class="contract">
+          点击即表示同意 
+          <router-link :to="{ path: '/protocol', params: { protocolId: 1 }}">《用户服务协议》</router-link>
+        </div>
       </div>
     </div>
     <div class="bg H5-3">
-      <img :src="bgs[2]" alt="">
+      <img :src="bgs[2]" alt="" />
     </div>
     <div class="footer">
       <p>中山大学达安基因（股票代码：002030）控股子公司，值得信赖</p>
@@ -43,6 +45,7 @@
 <script>
 import "../assets/css/main.stylus";
 import axios from 'axios';
+import qs from 'qs';
 import API_CONFIG from '../utils/api'
 
 export default {
@@ -75,66 +78,64 @@ export default {
       } else if (this.form.code === "") {
         this.$toast.error("请输入手机验证码");
       } else {
-        axios.post(API_CONFIG.doBorrowApply, {
+        let params = qs.stringify({
           userName: this.form.name,
-          mobile: this.form.phone
-        }).then((res) => {
-          if (res.data.success) {
+          mobile: this.form.phone,
+          validateCode: this.form.code
+        });
+        axios.post(API_CONFIG.doApply, params).then(res => {
+          if (res.data.returnCode === "0000") {
             // 跳转到成功
-            this.$router.push("/success");
+            this.$router.push("/success");          
           } else {
-            this.$toast.error("注册失败");
+            this.$toast.error(res.data.returnMsg);
           }
         })
       }
     },
 
     // 获取短信验证码
-    getCode () {  
-      let status = this.checkPhone();
-      console.log(status);
-      if (status) {
-        // 验证成功发送手机号
-        axios.post(API_CONFIG.getCode, {
-          phone: this.form.phone
-        }).then((res) => {
-          if (res.data.success) {
-            // 已发送
-            console.log(this);
-            this.$toast.success("短信发送成功");
-            this.time = 60;
-            this.disabled = true;
-            this.timer();
-          }          
-        })
-      }        
+    getCode () {
+      if(!/^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/.test(this.form.phone)){         
+        this.$toast.error("手机号格式不正确！");
+        return;
+      } else {  
+        let status = this.checkPhone();
+        console.log(status);
+        if (status) {
+          // 验证成功发送手机号
+          let params = qs.stringify({
+            mobile: this.form.phone
+          });
+          axios.post(API_CONFIG.getCode, params).then(res => {
+            if (res.data.returnCode === "0000") {
+              console.log('getmsg ', res.data)
+              // 已发送
+              this.$toast.success("手机验证码发送成功");
+              this.time = 60;
+              this.disabled = true;
+              this.timer();
+            }          
+          })
+        }
+      }
     },    
 
     // 验证手机号
-    checkPhone () {
-      var bool = false; 
-      if(!/^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/.test(this.form.phone)){         
-        this.$toast.error("手机号格式不正确！");
-        bool = false;
-      } else {
-        axios.post(API_CONFIG.checkMobile, {
-          mobile: this.form.phone
-        }).then((res) => {
-          console.log(res);
-          // if (res.data.response.code === "1") {
-          //   this.$toast.error("该手机已注册！");
-          // } else if (res.data.response.code === "2" ) {
-          //   this.$toast.error("手机号码格式错误！");
-          // } else {
-          //   // this.isPhone = true;
-          //   bool = true;            
-          // }
-          if (res.data.response.success) {            
-            bool = 1;
-            return bool;
-          }
-        })
-      }
+    async checkPhone() {
+      let params = qs.stringify({
+        mobile: this.form.phone
+      });
+      let result = await axios.post(API_CONFIG.checkMobile, params).then(res => {
+        console.log('checkphone ', res.data);
+        if (res.data.returnCode === "0000") {
+          return true;
+        } else {
+          this.$toast.error(res.data.returnMsg);
+          return false;
+        }
+      });
+      return result;
     },
 
     // 计时
@@ -158,8 +159,13 @@ export default {
   padding 0
   .mu-info-color,.mu-primary-color
     box-shadow none
-  // .mu-info-color
-  //   background-color #7cc5f3
+  .mu-info-color
+    background-color #7cc5f3
+    &.disabled {
+      color: rgba(0,0,0,.3);
+      cursor: not-allowed;
+      background-color: #e6e6e6;
+}
   // .mui-primary-color
   //   background-color #f58235
 </style>
