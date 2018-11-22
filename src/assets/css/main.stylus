@@ -115,16 +115,19 @@
           font-size: .75rem;
           padding: .5rem .75rem;
 
-    .contract
-      text-align: center;
+    .contract            
+      position: absolute;
+      height: 24px;
+      line-height: 24px;
       font-size: .875rem;
       color: #bdbdbd;
+      margin-top: 0px;
       a
         color: inherit;              
 
   .footer
     background: #fdf7df;
-    padding: 1.25rem;
+    padding: 1rem;
     text-align: center;
 
     p

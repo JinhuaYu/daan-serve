@@ -8,7 +8,7 @@
       <div class="loanForm">
         <div class="form-group">
           <span class="icon"><font-awesome-icon icon="user" /></span>                                      
-          <input class="form-control" type="text" v-model="form.name" placeholder="姓名" />                        
+          <input class="form-control" type="text" v-model="form.name" placeholder="姓氏" />                        
         </div>
         <div class="form-group">
           <span class="icon"><font-awesome-icon icon="mobile-alt" /></span>
@@ -21,13 +21,11 @@
             <mu-button color="info" :disabled="this.disabled" @click="getCode()">{{ btnTxt }}</mu-button>
           </div>
         </div>
-        <div class="form-group">
-          <mu-button large full-width color="primary" class="btn-primary" @click="submit()">测测我的借款额度</mu-button>
+        <div style="margin-bottom:.425rem">
+          <mu-checkbox label="点击即表示同意" v-model="form.isAgree"></mu-checkbox>
+          <span class="contract"><router-link :to="{ path: '/protocol' }">《用户服务协议》</router-link></span>
         </div>
-        <div class="contract">
-          点击即表示同意 
-          <router-link :to="{ path: '/protocol', params: { protocolId: 1 }}">《用户服务协议》</router-link>
-        </div>
+        <mu-button large full-width color="primary" class="btn-primary" @click="submit()">测测我的借款额度</mu-button>  
       </div>
     </div>
     <div class="bg H5-3">
@@ -46,7 +44,8 @@
 import "../assets/css/main.stylus";
 import axios from 'axios';
 import qs from 'qs';
-import API_CONFIG from '../utils/api'
+import API_CONFIG from '../utils/api';
+// import { request } from '@/utils/request';
 
 export default {
   name: "Reg",
@@ -55,14 +54,14 @@ export default {
       bgs: [
         require("../assets/images/H5_01.jpg"),
         require("../assets/images/H5_02.jpg"),
-        require("../assets/images/H5_03.jpg")
+        require("../assets/images/H5_03n.jpg")
       ],
       form: {
         name: "",
         phone: "",
-        code: ""
+        code: "",
+        isAgree: false
       },
-      isPhone: false, // 检验是否为手机号/手机未注册
       btnTxt: '获取验证码',
       time: 0, //
       disabled: false
@@ -72,11 +71,13 @@ export default {
     // 提交
     submit() {
       if (this.form.name === "") {
-        this.$toast.error("请输入您的姓名");
+        this.$toast.error("请输入您的姓氏");
       } else if (this.form.phone === "") {
         this.$toast.error("请输入您的手机号码");
       } else if (this.form.code === "") {
         this.$toast.error("请输入手机验证码");
+      } else if (!this.form.isAgree) {
+        this.$toast.error("请点击同意《用户服务协议》");
       } else {
         let params = qs.stringify({
           userName: this.form.name,
@@ -96,43 +97,48 @@ export default {
 
     // 获取短信验证码
     getCode () {
+      var self = this;
       if(!/^((1[3,5,8][0-9])|(14[5,7])|(17[0,6,7,8])|(19[7]))\d{8}$/.test(this.form.phone)){         
         this.$toast.error("手机号格式不正确！");
         return;
-      } else {  
-        let status = this.checkPhone();
-        console.log(status);
-        if (status) {
-          // 验证成功发送手机号
-          let params = qs.stringify({
-            mobile: this.form.phone
-          });
-          axios.post(API_CONFIG.getCode, params).then(res => {
-            if (res.data.returnCode === "0000") {
-              console.log('getmsg ', res.data)
-              // 已发送
-              this.$toast.success("手机验证码发送成功");
-              this.time = 60;
-              this.disabled = true;
-              this.timer();
-            }          
-          })
-        }
+      } else {
+        this.checkPhone().then(res => {
+          console.log('res:', res);
+          if (res === '0000') {
+            // debugger              
+            // 手机号码验证通过
+            let params = qs.stringify({
+              mobile: self.form.phone
+            });
+            axios.post(API_CONFIG.getCode, params).then(res => {
+              if (res.data.returnCode === "9999") { // 上线改为： 0000
+                console.log('getmsg ', res.data)
+                self.$toast.success("手机验证码发送成功");
+                self.time = 60;
+                self.disabled = true;
+                self.timer();
+              } else {
+                self.$toast.error(res.data.returnMsg);
+              }          
+            }).catch(err => err);
+          }
+        });        
       }
     },    
 
     // 验证手机号
     async checkPhone() {
+      let result;
       let params = qs.stringify({
         mobile: this.form.phone
       });
-      let result = await axios.post(API_CONFIG.checkMobile, params).then(res => {
+      await axios.post(API_CONFIG.checkMobile, params).then(res => {
         console.log('checkphone ', res.data);
         if (res.data.returnCode === "0000") {
-          return true;
+          result = res.data.returnCode;
         } else {
+          result = res.data.returnCode;
           this.$toast.error(res.data.returnMsg);
-          return false;
         }
       });
       return result;
@@ -150,6 +156,7 @@ export default {
         this.disabled = false;
       }
     }
+
   }
 };
 </script>
@@ -161,11 +168,11 @@ export default {
     box-shadow none
   .mu-info-color
     background-color #7cc5f3
-    &.disabled {
-      color: rgba(0,0,0,.3);
-      cursor: not-allowed;
-      background-color: #e6e6e6;
-}
-  // .mui-primary-color
-  //   background-color #f58235
+    &.disabled
+      color rgba(0,0,0,.3)
+      cursor not-allowed
+      background-color #e6e6e6
+  .mu-checkbox-label
+    color #bdbdbd
+
 </style>

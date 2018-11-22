@@ -1,9 +1,9 @@
 module.exports = {
-  baseUrl: "./",
+  baseUrl: "/loan/",
   devServer: {
     proxy: {
       "/api": {
-        target: "http://192.168.211.226:5324",
+        target: "http://192.168.211.236:5324",
         ws: true,
         changeOrgin: true,
         pathRewrite: {

@@ -2,7 +2,6 @@
   <div class="container">
     <div class="success">
       <mu-icon value="check_circle"></mu-icon>
-      <!-- <font-awesome-icon :icon="['far', 'check-circle']"></font-awesome-icon> -->
       <h1>提交成功</h1>
       <h4>感谢您的注册，我们会有专人与您联系！</h4>
     </div>

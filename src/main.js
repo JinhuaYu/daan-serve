@@ -2,16 +2,15 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import 'babel-polyfill'
 import MuseUI from "muse-ui"; // Material Design UI 组件库
 import "muse-ui/dist/muse-ui.css"; // MuseUI css
 import Toast from "muse-ui-toast";
 // iconfont
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser, faMobileAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
+// import { faCheckCircle } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-library.add(faUser, faEnvelope, faMobileAlt, faCheckCircle);
+library.add(faUser, faEnvelope, faMobileAlt);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 import "./assets/css/base.css";
 
