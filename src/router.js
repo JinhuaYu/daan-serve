@@ -21,6 +21,11 @@ export default new Router({
       path: "/protocol",
       name: "Protocol",
       component: () => import("./views/Protocol.vue")
+    },
+    {
+      path: "/list",
+      name: "List",
+      component: () => import("./views/List.vue")
     }
   ]
 });

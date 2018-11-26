@@ -5,6 +5,7 @@ import store from "./store";
 import MuseUI from "muse-ui"; // Material Design UI 组件库
 import "muse-ui/dist/muse-ui.css"; // MuseUI css
 import Toast from "muse-ui-toast";
+import moment from "moment"; // moment.js 时间格式
 // iconfont
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faUser, faMobileAlt, faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +28,12 @@ const ToastOption = {
 }
 Vue.use(MuseUI);
 Vue.use(Toast, ToastOption);
+moment.locale("zh_cn"); // 设置moment为中文
+Vue.filter("fromNow", date => {
+  // 添加过滤器 - 时间格式
+  // return moment(date).fromNow(); // 这是时间戳转时间
+  return moment(date).format("YYYY-MM-DD hh:mm:ss");
+})
 
 new Vue({
   router,

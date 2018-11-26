@@ -10,8 +10,10 @@ process.env.NODE_ENV === "development"
 
 const ajaxURL = {
   getCode: "/getValidateCode",
+  doApply: "/osUserReg",
   checkMobile: "/validateMobile",
-  doApply: "/osUserReg"
+  getUsetList: "/queryOSUserInfo",
+  downloadFile: "/downloadUserInfo"
 };
 
 export var request = async (type = "POST", url = "", data = {}) => {

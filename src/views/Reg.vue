@@ -34,7 +34,7 @@
     <div class="footer">
       <p>中山大学达安基因（股票代码：002030）控股子公司，值得信赖</p>
       <div class="contant">
-        联系方式：<a href="tel:020-83224967">020-83224967</a> <a href="tel:13312872661">13312872661</a> 
+        联系方式：<a href="tel:020-83521014">020-83521014</a> <a href="tel:18620852802">18620852802</a> 
       </div>
     </div>    
   </div>
@@ -111,7 +111,7 @@ export default {
               mobile: self.form.phone
             });
             axios.post(API_CONFIG.getCode, params).then(res => {
-              if (res.data.returnCode === "9999") { // 上线改为： 0000
+              if (res.data.returnCode === "0000") { // 上线改为： 0000
                 console.log('getmsg ', res.data)
                 self.$toast.success("手机验证码发送成功");
                 self.time = 60;
