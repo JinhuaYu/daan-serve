@@ -41,11 +41,12 @@
 </template>
 
 <script>
-import "../assets/css/main.stylus";
+import "@/assets/css/main.stylus";
 import axios from 'axios';
 import qs from 'qs';
-import API_CONFIG from '../utils/api';
+import API_CONFIG from '@/utils/api';
 // import { request } from '@/utils/request';
+import { commonShare } from '@/utils/wxShare';
 
 export default {
   name: "Reg",
@@ -64,10 +65,24 @@ export default {
       },
       btnTxt: '获取验证码',
       time: 0, //
-      disabled: false
+      disabled: false,
+      reqUrl: window.location.href.split('#')[0],
+      share: {
+        title: document.title,
+        desc: '达安金服',
+        link: window.location.href.split('#')[0], // encodeURIComponent()
+        imgUrl: require("../assets/images/H5_01.jpg")
+      }
     }
   },
-  methods: {    
+
+  mounted () {
+    this.getWxConfig().then(res => {
+      commonShare(this, res, this.reqUrl, this.share.title, this.share.desc, this.share.link, this.share.imgUrl);
+    })    
+  },
+
+  methods: {
     // 提交
     submit() {
       if (this.form.name === "") {
@@ -87,7 +102,7 @@ export default {
         axios.post(API_CONFIG.doApply, params).then(res => {
           if (res.data.returnCode === "0000") {
             // 跳转到成功
-            this.$router.push("/success");          
+            this.$router.push("/success");
           } else {
             this.$toast.error(res.data.returnMsg);
           }
@@ -155,9 +170,24 @@ export default {
         this.btnTxt = "获取验证码";
         this.disabled = false;
       }
+    },
+
+    // 获取微信接口配置
+    async getWxConfig() {
+      let result;
+      let params = qs.stringify({
+        url: this.reqUrl
+      });
+      await axios.post(API_CONFIG.getWxCongif, params).then(res => {
+        if (res.data.returnCode === "0000") {
+          result = res.data;
+          console.log(result);
+        }
+      });
+      return result;
     }
 
-  }
+  }  
 };
 </script>
 
