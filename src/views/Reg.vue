@@ -77,9 +77,10 @@ export default {
   },
 
   mounted () {
+    const _this = this;
     this.getWxConfig().then(res => {
-      commonShare(this, res, this.reqUrl, this.share.title, this.share.desc, this.share.link, this.share.imgUrl);
-    })    
+      commonShare(_this, res, this.share.title, this.share.desc, this.share.link, this.share.imgUrl);
+    })
   },
 
   methods: {
@@ -118,7 +119,6 @@ export default {
         return;
       } else {
         this.checkPhone().then(res => {
-          console.log('res:', res);
           if (res === '0000') {
             // debugger              
             // 手机号码验证通过
@@ -127,7 +127,6 @@ export default {
             });
             axios.post(API_CONFIG.getCode, params).then(res => {
               if (res.data.returnCode === "0000") { // 上线改为： 0000
-                console.log('getmsg ', res.data)
                 self.$toast.success("手机验证码发送成功");
                 self.time = 60;
                 self.disabled = true;
@@ -181,7 +180,6 @@ export default {
       await axios.post(API_CONFIG.getWxCongif, params).then(res => {
         if (res.data.returnCode === "0000") {
           result = res.data;
-          console.log(result);
         }
       });
       return result;

@@ -3,8 +3,8 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-export default new Router({
-  // mode: "history",
+const router = new Router({
+  mode: "history",
   base: process.env.BASE_URL,
   routes: [
     {
@@ -29,3 +29,18 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  if (!window.initUrl) {
+    window.initUrl = location.href.split("#")[0];
+  }
+  next();
+});
+
+// router.beforeEach((to, from, next) => {
+//   // ...
+//   console.log(to);
+//   next();
+// });
+
+export default router;

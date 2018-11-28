@@ -1,8 +1,9 @@
 let baseURL = "";
-
 process.env.NODE_ENV === "development"
   ? baseURL = "http://192.168.211.226:5324"
-  : baseURL = "http://ygjffax.cn:5324/daan-service";
+  : baseURL = "http://ygjffax.cn/daan-service";
+
+baseURL = "http://ygjffax.cn/daan-service";
 
 const API_CONFIG = {
   getCode: baseURL + "/getValidateCode",

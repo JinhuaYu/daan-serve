@@ -1,6 +1,6 @@
 module.exports = {
-  baseUrl: "./",
-  productionSourceMap: false,
+  baseUrl: "/loan",
+  productionSourceMap: true,
   devServer: {
     proxy: {
       "/api": {
