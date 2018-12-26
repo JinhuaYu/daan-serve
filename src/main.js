@@ -15,6 +15,9 @@ library.add(faUser, faEnvelope, faMobileAlt);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 import "./assets/css/base.css";
 
+// 自定义组件
+import UserBar from "./components/userBar.vue";
+
 Vue.config.productionTip = false;
 const ToastOption = {
   position: "top", // 弹出的位置
@@ -25,7 +28,7 @@ const ToastOption = {
   infoIcon: "info", // 信息信息图标
   warningIcon: "priority_high", // 提醒信息图标
   errorIcon: "warning" // 错误信息图标
-}
+};
 Vue.use(MuseUI);
 Vue.use(Toast, ToastOption);
 moment.locale("zh_cn"); // 设置moment为中文
@@ -33,7 +36,9 @@ Vue.filter("fromNow", date => {
   // 添加过滤器 - 时间格式
   // return moment(date).fromNow(); // 这是时间戳转时间
   return moment(date).format("YYYY-MM-DD hh:mm:ss");
-})
+});
+
+Vue.component("UserBar", UserBar);
 
 new Vue({
   router,

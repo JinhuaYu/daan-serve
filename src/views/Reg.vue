@@ -69,9 +69,9 @@ export default {
       reqUrl: window.location.href.split('#')[0],
       share: {
         title: document.title,
-        desc: '达安金服',
+        desc: '信用贷款 在线申请 30万快至30分钟到账',
         link: window.location.href.split('#')[0], // encodeURIComponent()
-        imgUrl: require("../assets/images/H5_01.jpg")
+        imgUrl: require("../assets/images/shareImg.jpg")
       }
     }
   },
@@ -79,7 +79,14 @@ export default {
   mounted () {
     const _this = this;
     this.getWxConfig().then(res => {
-      commonShare(_this, res, this.share.title, this.share.desc, this.share.link, this.share.imgUrl);
+      commonShare(
+        _this, 
+        res, 
+        _this.share.title, 
+        _this.share.desc, 
+        _this.share.link, 
+        _this.share.link + _this.share.imgUrl
+      );
     })
   },
 
@@ -102,7 +109,6 @@ export default {
         });
         axios.post(API_CONFIG.doApply, params).then(res => {
           if (res.data.returnCode === "0000") {
-            // 跳转到成功
             this.$router.push("/success");
           } else {
             this.$toast.error(res.data.returnMsg);
@@ -120,20 +126,18 @@ export default {
       } else {
         this.checkPhone().then(res => {
           if (res === '0000') {
-            // debugger              
-            // 手机号码验证通过
             let params = qs.stringify({
               mobile: self.form.phone
             });
             axios.post(API_CONFIG.getCode, params).then(res => {
-              if (res.data.returnCode === "0000") { // 上线改为： 0000
+              if (res.data.returnCode === "0000") {
                 self.$toast.success("手机验证码发送成功");
                 self.time = 60;
                 self.disabled = true;
                 self.timer();
               } else {
                 self.$toast.error(res.data.returnMsg);
-              }          
+              }
             }).catch(err => err);
           }
         });        
@@ -146,8 +150,7 @@ export default {
       let params = qs.stringify({
         mobile: this.form.phone
       });
-      await axios.post(API_CONFIG.checkMobile, params).then(res => {
-        console.log('checkphone ', res.data);
+      await axios.post(API_CONFIG.checkMobile, params).then(res => {        
         if (res.data.returnCode === "0000") {
           result = res.data.returnCode;
         } else {
@@ -173,9 +176,10 @@ export default {
 
     // 获取微信接口配置
     async getWxConfig() {
-      let result;
+      let result;      
+      // alert(this.reqUrl);
       let params = qs.stringify({
-        url: this.reqUrl
+        url: encodeURIComponent(this.reqUrl)
       });
       await axios.post(API_CONFIG.getWxCongif, params).then(res => {
         if (res.data.returnCode === "0000") {

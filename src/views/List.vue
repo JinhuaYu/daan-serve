@@ -1,6 +1,7 @@
 <template>
   <div id="list">
-    <div class="container">
+    <div class="container">      
+      <UserBar></UserBar>
       <mu-row gutter>
         <mu-col span="12" lg="4" sm="6">
           <mu-date-input v-model="startDate" label="选择开始日期" value-format="YYYY-MM-DD" no-display label-float full-width></mu-date-input>
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import API_CONFIG from "@/utils/api";
 import axios from 'axios'; // axios
 import qs from 'qs';
@@ -67,6 +69,9 @@ export default {
       pagesize: 10,   // 每页显示条目个数
       pagecount: 7   // 页码按钮的数量，当总页数超过该值时会折叠
     }    
+  },
+  computed: {
+    ...mapState(["isLogin", "username"])
   },
   created () {
     this.featchUserList("","",1)
@@ -152,7 +157,6 @@ export default {
 body
   background #fef6e1
 #list
-  padding-top 30px
   max-width 876px    
   margin 0 auto
   .button-wrapper
